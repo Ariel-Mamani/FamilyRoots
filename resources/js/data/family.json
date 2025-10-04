@@ -1,0 +1,78 @@
+[
+    {
+        "key": 1,
+        "name": "Agustín Gonzales López",
+        "fechaNacimiento": "2000-05-14",
+        "edad": 24,
+        "lugarNacimiento": "Buenos Aires",
+        "source": "/imagenes/hijo.jpg",
+        "genero": "Masculino",
+        "relacion": "Yo"
+    },
+    {
+        "key": 2,
+        "parent": 1,
+        "name": "Roberto Gonzales Martínez",
+        "fechaNacimiento": "1975-09-10",
+        "edad": 49,
+        "lugarNacimiento": "Buenos Aires",
+        "source": "/imagenes/padre.jpg",
+        "genero": "Masculino",
+        "relacion": "Padre"
+    },
+    {
+        "key": 3,
+        "parent": 1,
+        "name": "María López Sánchez",
+        "fechaNacimiento": "1978-02-22",
+        "edad": 46,
+        "lugarNacimiento": "Córdoba",
+        "source": "/imagenes/madre.jpg",
+        "genero": "Femenino",
+        "relacion": "Madre"
+    },
+    {
+        "key": 4,
+        "parent": 2,
+        "name": "Carlos Gonzales Rodríguez",
+        "fechaNacimiento": "1950-11-03",
+        "edad": 74,
+        "lugarNacimiento": "Mendoza",
+        "source": "/imagenes/abuelo2.jpg",
+        "genero": "Masculino",
+        "relacion": "Abuelo Paterno"
+    },
+    {
+        "key": 5,
+        "parent": 2,
+        "name": "Elena Martínez Fernández",
+        "fechaNacimiento": "1952-07-19",
+        "edad": 72,
+        "lugarNacimiento": "Mendoza",
+        "source": "/imagenes/abuela.jpg",
+        "genero": "Femenino",
+        "relacion": "Abuela Paterna"
+    },
+    {
+        "key": 6,
+        "parent": 3,
+        "name": "José López García",
+        "fechaNacimiento": "1950-11-03",
+        "edad": 75,
+        "lugarNacimiento": "Córdoba",
+        "source": "/imagenes/abuelo.jpg",
+        "genero": "Masculino",
+        "relacion": "Abuelo Materno"
+    },
+    {
+        "key": 7,
+        "parent": 3,
+        "name": "Carmen Sánchez Ruiz",
+        "fechaNacimiento": "1952-07-19",
+        "edad": 74,
+        "lugarNacimiento": "Córdoba",
+        "source": "/imagenes/abuela2.jpg",
+        "genero": "Femenino",
+        "relacion": "Abuela Materna"
+    }
+]
