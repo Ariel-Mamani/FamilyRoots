@@ -151,7 +151,7 @@ export default function EspacioTrabajo() {
         if (foundNode) {
             diagram.select(foundNode);
 
-            const node = foundNode as any;
+            const node = foundNode as go.Node;
             if (node.actualBounds) {
                 diagram.centerRect(node.actualBounds);
             }
@@ -193,7 +193,7 @@ export default function EspacioTrabajo() {
             return;
         }
 
-        // crear PDF
+        // crear el PDF
         const pdf = new jsPDF("landscape", "pt", "a4");
         const imgProps = pdf.getImageProperties(img);
         const pdfWidth = pdf.internal.pageSize.getWidth();
