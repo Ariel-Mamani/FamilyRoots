@@ -47,7 +47,9 @@ class Arbol extends Model
                     'birthYear' => $node->birth_year,
                     'deathYear' => $node->death_year,
                     'img' => $node->img,
-                    'position' => $node->position
+                    'position' => $node->position,
+                    'countryIso' => $node->country_iso,   
+                    'countryName' => $node->country_name  
                 ], $node->node_data ?? []);
             })->values()->toArray(),
             'links' => $this->links->map(function ($link) {

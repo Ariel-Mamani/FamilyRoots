@@ -17,7 +17,9 @@ class FamilyTreeNode extends Model
         'death_year',
         'img',
         'node_data',
-        'position'
+        'position',
+        'country_iso',
+        'country_name',
     ];
 
     protected $casts = [
@@ -66,4 +68,5 @@ class FamilyTreeNode extends Model
     {
         return $this->hasMany(NodeTag::class, 'node_id');
     }
+    
 }

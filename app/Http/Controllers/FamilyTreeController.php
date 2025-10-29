@@ -130,7 +130,6 @@ class FamilyTreeController extends Controller
 
             $newKeys = collect($request->nodes)->pluck('key')->toArray();
 
-            // 🔹 Eliminar solo los nodos que ya no existen
             $arbol->nodes()->whereNotIn('node_key', $newKeys)->delete();
 
             foreach ($request->nodes as $nodeData) {
@@ -147,6 +146,8 @@ class FamilyTreeController extends Controller
                         'img' => $nodeData['img'] ?? null,
                         'node_data' => $nodeData,
                         'position' => $nodeData['loc'] ?? null,
+                        'country_iso' => $nodeData['countryIso'] ?? null,
+                        'country_name' => $nodeData['countryName'] ?? null,
                     ]
                 );
             }

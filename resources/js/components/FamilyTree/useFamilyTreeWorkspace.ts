@@ -11,6 +11,8 @@ interface FamilyMember {
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
+    countryIso?: string;     
+    countryName?: string;    
 }
 
 interface TreeData {
@@ -92,7 +94,6 @@ export function useFamilyTreeWorkspace(
 
     const saveTreeData = useCallback(async () => {
         if (!isDirty) return;
-
         setLoading(true);
         setError(null);
 

@@ -39,7 +39,9 @@ export function useDiagramManagement(
                 spouses: member.spouses || [],
                 parents: member.parents || [],
                 isMarriageNode: false,
-                hasIllness: illnessMap[member.id!] || false 
+                hasIllness: illnessMap[member.id!] || false,
+                countryIso:  member.countryIso,     
+                countryName:  member.countryName,  
             });
         });
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCountries } from "./useCountries"; 
 
 interface FamilyMember {
     key: number | string;
@@ -7,10 +8,13 @@ interface FamilyMember {
     birthYear?: number;
     deathYear?: number;
     img?: string;
+    country?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
     isMarriageNode?: boolean;
     spouseKeys?: (number | string)[];
+    countryIso?: string;     
+    countryName?: string;    
 }
 
 interface NewMember {
@@ -18,6 +22,8 @@ interface NewMember {
     gender: 'M' | 'F' | 'Other';
     birthYear: number | undefined;
     img: string;
+    countryIso?: string;
+    countryName?: string;
 }
 
 interface AddMemberModalProps {
@@ -44,19 +50,20 @@ export default function AddMemberModal({
     modalCancelRef
 }: AddMemberModalProps) {
     if (!showAddModal) return null;
+    const { countries, loading } = useCountries();
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="fixed inset-0 bg-black/40" aria-hidden="true" onClick={() => setShowAddModal(false)} />
-            
+
             <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4 p-6">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                    {selected?.isMarriageNode 
-                        ? 'Añadir hijo/a de la pareja' 
-                        : `Añadir ${addRelationType === 'child' ? 'hijo/a' : 
-                                   addRelationType === 'spouse' ? 'cónyuge' : 'padre/madre'}`}
+                    {selected?.isMarriageNode
+                        ? 'Añadir hijo/a de la pareja'
+                        : `Añadir ${addRelationType === 'child' ? 'hijo/a' :
+                            addRelationType === 'spouse' ? 'cónyuge' : 'padre/madre'}`}
                 </h3>
-                
+
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -111,7 +118,36 @@ export default function AddMemberModal({
                         />
                     </div>
                 </div>
-                
+
+                {/*------------------------------ PAIS */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        País de origen
+                    </label>
+
+                    {loading ? (
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Cargando países...</p>
+                    ) : (
+                        <select
+                            value={newMember.countryIso || ''}
+                            onChange={(e) => {
+                                const selectedOption = e.target.options[e.target.selectedIndex];
+                                setNewMember(prev => ({
+                                    ...prev,
+                                    countryIso: e.target.value,
+                                    countryName: selectedOption.text
+                                }));
+                            }}
+                            className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+                        >
+                            <option value="">Seleccione un país</option>
+                            {countries.map((c) => (
+                                <option key={c.iso} value={c.iso}>{c.name}</option>
+                            ))}
+                        </select>
+                    )}
+                </div>
+
                 <div className="flex gap-3 mt-6">
                     <button
                         ref={modalCancelRef}

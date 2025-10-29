@@ -13,6 +13,8 @@ export interface FamilyMember {
     isMarriageNode?: boolean;
     spouseKeys?: (number | string)[];
     hasIllness?: boolean;
+    countryIso?: string;     // ej AR
+    countryName?: string;    // ej Argentina
 }
 
 export function useFamilyMemberManagement(
@@ -25,11 +27,15 @@ export function useFamilyMemberManagement(
         gender: 'M' | 'F' | 'Other';
         birthYear: number | undefined;
         img: string;
+        countryIso?: string;
+        countryName?: string;
     }>({
         name: '',
         gender: 'M',
         birthYear: undefined,
-        img: '/imagenes/logo Arbol.png'
+        img: '/imagenes/logo Arbol.png',
+        countryIso: '',
+        countryName: ''
     });
 
     // Update member function
@@ -59,7 +65,9 @@ export function useFamilyMemberManagement(
             birthYear: newMember.birthYear,
             img: newMember.img,
             spouses: [],
-            parents: []
+            parents: [],
+            countryIso: newMember.countryIso,
+            countryName: newMember.countryName
         };
 
         // Asignar relaciones iniciales según tipo

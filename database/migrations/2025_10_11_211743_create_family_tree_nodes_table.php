@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('gender')->default('M');
             $table->integer('birth_year')->nullable();
             $table->integer('death_year')->nullable();
+             $table->string('country_iso', 2)->nullable();   // Código ISO del pais ej: AR
+            $table->string('country_name')->nullable();     // Nombre del pais ej: Argentina
             $table->string('img')->nullable();
             $table->json('node_data')->nullable(); // Datos completos del nodo GoJS
             $table->json('position')->nullable(); // Posición X,Y del nodo

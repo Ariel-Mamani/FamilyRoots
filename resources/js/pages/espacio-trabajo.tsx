@@ -30,6 +30,8 @@ interface FamilyMember {
     img?: string;
     spouses?: (number | string)[];
     parents?: (number | string)[];
+    countryIso?: string;     
+    countryName?: string; 
 }
 
 export default function EspacioTrabajo() {
