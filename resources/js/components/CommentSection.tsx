@@ -20,13 +20,14 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSaving, setIsSaving] = useState(false);
-    const setLoading = useState(true)[1]
+    const [loading, setLoading] = useState(true); // ✅ Corregido - mantener el array completo
 
     // ---------------------------------------------------------- Cargar comentarios ---
     useEffect(() => {
         if (!nodeId) {
             console.warn("⚠️ No se recibió nodeId válido en CommentSection");
             setComments([]);
+            setLoading(false); // ✅ Mover setLoading aquí
             return;
         }
 
@@ -51,8 +52,7 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
                 setComments([]);
             })
             .finally(() => setLoading(false));
-    }, [nodeId]);
-
+    }, [nodeId, setLoading]); // ✅ Agregar setLoading a las dependencias
 
     // --- Cancelar 
     const handleCancel = () => setNewComment("");
@@ -80,7 +80,6 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
             .catch((err) => console.error("Error guardando comentario:", err))
             .finally(() => setIsSaving(false));
     };
-
 
     // --------------------------------------------------------------- Eliminar comentario ---
     const handleDeleteComment = async (commentId: number) => {
@@ -145,34 +144,47 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
         }
     };
 
-
-
     useEffect(() => {
         if (onCommentsChange) {
             onCommentsChange(comments.length);
         }
     }, [comments.length, onCommentsChange]);
 
+    // ✅ Mostrar estado de carga
+    if (loading) {
+        return (
+            <div className="p-4">
+                <p className="text-gray-500">Cargando comentarios...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="p-4">
             {/* Textarea para nuevo comentario */}
-            <textarea className="w-full border-2 border-emerald-600 rounded p-2 mb-2"
+            <textarea 
+                className="w-full border-2 border-emerald-600 rounded p-2 mb-2"
                 placeholder="Escribe tu comentario..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                rows={3}/>
+                rows={3}
+            />
 
             {/* Botones*/}
             <div className="flex gap-2 mb-4">
-                <button className="px-4 py-2 bg-white text-emerald-800 rounded hover:bg-gray-200"
-                    onClick={handleCancel}>
+                <button 
+                    className="px-4 py-2 bg-white text-emerald-800 rounded hover:bg-gray-200"
+                    onClick={handleCancel}
+                >
                     Cancelar
                 </button>
 
-                <button className="px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800"
-                    onClick={handleSave} disabled={isSaving || !newComment.trim()}>
-                    Guardar
+                <button 
+                    className="px-4 py-2 bg-emerald-700 text-white rounded hover:bg-emerald-800"
+                    onClick={handleSave} 
+                    disabled={isSaving || !newComment.trim()}
+                >
+                    {isSaving ? "Guardando..." : "Guardar"}
                 </button>
             </div>
 
@@ -182,17 +194,16 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
                     <p className="text-gray-500">No hay comentarios aún.</p>
                 ) : (
                     comments.map((comment, index) => (
-                        <div key={comment.id ?? index} className=" p-3 rounded-md bg-gray-900 relative group">
-
+                        <div key={comment.id ?? index} className="p-3 rounded-md bg-gray-900 relative group">
                             {/* Mini Header con botones */}
-                            <div className="flex justify-between items-center  border-gray-700">
-                                <div className="top-0 right-0  flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-
+                            <div className="flex justify-between items-center border-gray-700">
+                                <div className="top-0 right-0 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     {/* Boton Editar */}
                                     <button
                                         onClick={() => { setEditingId(comment.id); setEditedContent(comment.content); }}
                                         className="p-1 text-yellow-200 hover:text-yellow-500"
-                                        title="Editar comentario">
+                                        title="Editar comentario"
+                                    >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                                             <path d="m15 5 4 4" />
@@ -203,7 +214,8 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
                                     <button
                                         onClick={() => handleDeleteComment(comment.id)}
                                         className="p-1 text-red-400 hover:text-red-500"
-                                        title="Eliminar comentario">
+                                        title="Eliminar comentario"
+                                    >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M10 11v6" />
                                             <path d="M14 11v6" />
@@ -212,18 +224,23 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
                                             <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                                         </svg>
                                     </button>
-                                    
                                 </div>
                             </div>
 
                             {editingId === comment.id ? (
                                 <div className="space-y-2">
-                                    <textarea className="w-full bg-gray-800 text-white p-2 rounded-md border border-gray-600" rows={2} value={editedContent} onChange={(e) => setEditedContent(e.target.value)}/>
+                                    <textarea 
+                                        className="w-full bg-gray-800 text-white p-2 rounded-md border border-gray-600" 
+                                        rows={2} 
+                                        value={editedContent} 
+                                        onChange={(e) => setEditedContent(e.target.value)}
+                                    />
                                     <div className="flex justify-end space-x-2">
                                         <button
                                             onClick={() => handleEditComment(comment.id)}
                                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md"
-                                            disabled={isUpdating}>
+                                            disabled={isUpdating}
+                                        >
                                             {isUpdating ? "Guardando..." : "Guardar"}
                                         </button>
                                         <button
@@ -231,7 +248,8 @@ export default function CommentSection({ nodeId, onCommentsChange }: CommentSect
                                                 setEditingId(null);
                                                 setEditedContent("");
                                             }}
-                                            className="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded-md">
+                                            className="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded-md"
+                                        >
                                             Cancelar
                                         </button>
                                     </div>

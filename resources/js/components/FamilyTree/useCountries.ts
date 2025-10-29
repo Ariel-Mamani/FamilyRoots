@@ -17,9 +17,9 @@ export function useCountries() {
                 if (!response.ok) throw new Error("Error al obtener países");
                 const data = await response.json();
                 setCountries(data);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Error al cargar los países:", err);
-                setError(err.message || "Error desconocido");
+                setError(err instanceof Error ? err.message : "Error desconocido");
             } finally {
                 setLoading(false);
             }

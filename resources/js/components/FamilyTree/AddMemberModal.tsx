@@ -49,8 +49,9 @@ export default function AddMemberModal({
     modalConfirmRef,
     modalCancelRef
 }: AddMemberModalProps) {
-    if (!showAddModal) return null;
+
     const { countries, loading } = useCountries();
+    if (!showAddModal) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
