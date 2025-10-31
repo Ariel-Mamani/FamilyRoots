@@ -183,6 +183,22 @@ class FamilyTreeController extends Controller
         return response()->json($arbol->getTreeData());
     }
 
+    public function getUserNodes()
+    {
+        $this->checkAuth();
+
+        $user = auth()->user();
+
+        // Traer todos los nodos de los arboles del usuario
+        $nodes = \App\Models\FamilyTreeNode::whereIn('arbol_id', function ($q) use ($user) {
+            $q->select('id')->from('arboles')->where('user_id', $user->id);
+        })
+            ->select('id', 'name', 'arbol_id')
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($nodes);
+    }
 
     /**
      * Add a single node to the tree.

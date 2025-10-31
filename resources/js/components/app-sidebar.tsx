@@ -16,7 +16,7 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Calendar, Users, Home } from 'lucide-react';
 import AppLogo from './app-logo';
-import { TreePine, Plus  } from 'lucide-react';
+import { TreePine, Plus, Earth  } from 'lucide-react';
 
 
 const mainNavItems: NavItem[] = [
@@ -44,6 +44,11 @@ const mainNavItems: NavItem[] = [
         title: 'Actividades',
         href: '/actividades',
         icon: Users,
+    },
+    {
+        title: 'origenes',
+        href: '/origenes',
+        icon: Earth,
     },
 ];
 

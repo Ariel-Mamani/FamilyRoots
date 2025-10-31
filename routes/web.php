@@ -10,6 +10,9 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NodeTagController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\FamilyTreeController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 // Ruta raíz: delegar al BuscadorController para pasar `arboles` a la vista welcome
 Route::get('/', [BuscadorController::class, 'index'])->name('home');
@@ -78,6 +81,46 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/countries', [CountryController::class, 'index']);
+
+    Route::get('/api/nodos-usuario', [FamilyTreeController::class, 'getUserNodes'])
+        ->middleware('auth')
+        ->name('user.nodes');
+
+    Route::get('/origenes', function () {
+        return Inertia::render('origenes');
+    })->name('origenes');
+
+    // API para buscar en OnoGraph
+    // Proxy seguro: Laravel hace la llamada a OnoGraph y devuelve el JSON al frontend
+    Route::get('/api/origenes', function (Request $request) {
+        $key = config('services.onograph.key') ?? env('ONOGRAPH_KEY');
+
+        $response = Http::get('https://ono.4b.rs/v1/nat', [
+            'key' => $key,
+            'fn' => $request->query('fn'),
+            'sn' => $request->query('sn'),
+            'ssn' => $request->query('ssn'),
+            'sanitize' => 1,
+        ]);
+
+        return response($response->body(), $response->status())
+            ->header('Content-Type', 'application/json');
+    })->name('api.origenes');
+
+    // Ruta para la API de ubicacion
+    Route::get('/api/ubicacion', function (Request $request) {
+        $key = config('services.onograph.key') ?? env('ONOGRAPH_KEY'); 
+
+        $response = Http::get('https://ono.4b.rs/v1/jur', [
+            'key' => $key,
+            'name' => $request->query('name'),
+            'type' => $request->query('type'), 
+            'sanitize' => 1,
+        ]);
+
+        return response($response->body(), $response->status())
+            ->header('Content-Type', 'application/json');
+    })->name('api.ubicacion');
     // Family Tree Management Routes (COMENTADAS - NO UTILIZADAS - NO BORRAR POR AHORA)
     // Estas rutas fueron creadas para gestión completa de árboles via API,
     // pero el frontend actual usa un flujo diferente con ArbolController y rutas web
