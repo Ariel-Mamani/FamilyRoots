@@ -18,7 +18,9 @@ export const useUserNodes = () => {
                 const response = await axios.get("/api/nodos-usuario");
                 setNodes(response.data);
             } catch (err) {
-                setError("Error al cargar los nodos del usuario");
+                console.error("Error al cargar los nodos:", err);
+                setError(`Error al cargar los nodos: ${err instanceof Error ? err.message : "Error desconocido"}`);
+                
             } finally {
                 setLoading(false);
             }
