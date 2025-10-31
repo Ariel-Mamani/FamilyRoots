@@ -11,6 +11,8 @@ import {
   EventClickArg,
 } from "@fullcalendar/core";
 import { useState, useEffect } from 'react'; 
+import { useSelectedCountry } from '@/hooks/useSelectedCountry';
+import { useHolidays } from '@/hooks/useHolidays';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -42,6 +44,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Calendar({ calendars, flash }: Props) {
+    // Country selector
+    const { countries, selectedCountry, setSelectedCountry, loading: loadingCountries } = useSelectedCountry();
+    const year = new Date().getFullYear();
+    const countryCode = selectedCountry?.iso || '';
+    const { holidays, loading: loadingHolidays } = useHolidays(countryCode, year);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [color, setColor] = useState('#000000');
@@ -102,13 +109,26 @@ export default function Calendar({ calendars, flash }: Props) {
     };
 
     function formatEvents() {
-        return calendars.map((calendar) => ({
+        // Eventos del usuario
+        const userEvents = calendars.map((calendar) => ({
             id: calendar.id.toString(),
-            title: calendar.title,
+            title: `${calendar.title}`,
             start: new Date(calendar.start),
             end: new Date(calendar.end),
             color: calendar.color,
+            allDay: true,
         }));
+        // Holidays de Nager.Date
+        const holidayEvents = holidays?.map((h) => ({
+            id: `holiday-${h.date}`,
+            title: `🎉 ${h.localName}`,
+            start: h.date,
+            end: h.date,
+            color: '#f59e42', // naranja
+            allDay: true,
+            holiday: true,
+        })) || [];
+        return [...userEvents, ...holidayEvents];
     }
 
     function handleEventDrop(info: EventDropArg) {
@@ -249,6 +269,27 @@ export default function Calendar({ calendars, flash }: Props) {
                 </a>
                 
                 <div className="mx-auto max-w-7xl" id="calendar-content">
+                    {/* Selector de país para holidays */}
+                    <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">País para feriados</label>
+                            <select
+                                value={countryCode}
+                                onChange={e => {
+                                    const selected = countries.find(c => c.iso === e.target.value);
+                                    setSelectedCountry(selected || null);
+                                }}
+                                className="rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+                                disabled={loadingCountries}
+                            >
+                                <option value="">Seleccione un país</option>
+                                {countries.map(c => (
+                                    <option key={c.iso} value={c.iso}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        {loadingHolidays && <span className="text-sm text-gray-500 dark:text-gray-400">Cargando feriados...</span>}
+                    </div>
                     {/* Header */}
                     <div className="mb-6">
                         <div className="flex items-center gap-3 mb-3">
