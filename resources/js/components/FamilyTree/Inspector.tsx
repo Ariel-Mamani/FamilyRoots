@@ -13,6 +13,8 @@ import { useSelectedCountry } from '@/hooks/useSelectedCountry';
 import { useHolidays } from '@/hooks/useHolidays';
 import { AlertTriangle } from 'lucide-react';
 import TagSelector from '../TagSelector';
+import { useCountries } from './useCountries'; 
+import CountryFlag from 'react-country-flag';
 
 interface FamilyMember {
     id?: number | string;
@@ -26,6 +28,8 @@ interface FamilyMember {
     parents?: (number | string)[];
     isMarriageNode?: boolean;
     spouseKeys?: (number | string)[];
+    countryIso?: string;     
+    countryName?: string; 
 }
 
 interface InspectorProps {
@@ -68,6 +72,8 @@ export default function Inspector({
         setRememberType(type);
         setIsRememberOpen(true);
     };
+    const { countries, loading, error } = useCountries();
+
 
     // País y feriados
     const { selectedCountry } = useSelectedCountry();
@@ -494,7 +500,54 @@ export default function Inspector({
                                             />
                                         </div>
                                     </div>
+{/* PAIS DE ORIGEN */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            País de Origen o País donde reside
+                                        </label>
 
+                                        {loading ? (
+                                            <p>Cargando países...</p>
+                                        ) : error ? (
+                                            <p className="text-red-500">Error al cargar países: {error}</p>
+                                        ) : (
+
+                                            <select
+                                                value={selected.countryIso || ''}
+                                                onChange={(e) => {
+                                                    const selectedOption = e.target.options[e.target.selectedIndex];
+                                                    const newCountryIso = e.target.value;
+                                                    const newCountryName = selectedOption.text;
+
+                                                    updateSelectedMember({
+                                                        countryIso: newCountryIso,
+                                                        countryName: newCountryName
+                                                    });
+                                                }}
+                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                            >
+                                                <option value="">Selecciona un país</option>
+                                                {countries.map((c) => (
+                                                    <option key={c.iso} value={c.iso}>{c.name} - {c.iso}</option>
+                                                ))}
+                                            </select>
+
+                                        )}
+                                        {/* ACA mostramos la bandera */}
+                                        {selected.countryIso && (
+                                            <div className="mt-2 flex justify-center">
+                                                <CountryFlag
+                                                    countryCode={selected.countryIso}
+                                                    svg
+                                                    style={{
+                                                        width: '40px',
+                                                        height: '40px',
+                                                    }}
+                                                    title={selected.countryName}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                     {/* Actions for regular members */}
                                     <div className="space-y-3 border-t border-gray-200 pt-4 dark:border-gray-700">
                                         <div className="flex items-center gap-2">
