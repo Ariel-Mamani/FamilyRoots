@@ -66,9 +66,9 @@ export function useUbicacion(
 
                 const json = await resp.json();
                 setData(json as UbicacionResponse);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error(err);
-                setError(err.message || "Error desconocido");
+                setError(err instanceof Error ? err.message : "Error desconocido");
             } finally {
                 setLoading(false);
             }
