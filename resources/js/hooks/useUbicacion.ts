@@ -8,7 +8,10 @@ interface Jurisdiction {
     jurisdiction: string;
     iso: string;
 }
-
+interface ApiStatus {
+    code: number;
+    message: string;
+}
 interface UbicacionResponse {
     jurisdictions: Jurisdiction[];
     world?: {
@@ -20,7 +23,7 @@ interface UbicacionResponse {
     name: string;
     type: string;
     sanitizedName?: string;
-    status?: any[];
+    status?: ApiStatus[];
     remainingCredits?: number;
 }
 

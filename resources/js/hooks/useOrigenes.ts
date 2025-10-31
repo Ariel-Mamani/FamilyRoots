@@ -5,22 +5,16 @@ interface CountryProb {
     por_ciento: number;
 }
 
-interface SphereProb {
-    esfera: string;
-    por_ciento: number;
-}
 
-// NUEVA interfaz para lo que realmente devuelve la API
 interface ApiCountry {
     jurisdiction: string;
-    percent: string; // Viene como string, no number
+    percent: string; 
 }
 
 interface OnoGraphResponse {
     países: CountryProb[];
     nombre?: string;
     apellido?: string;
-    // Agregar la estructura real que devuelve la API
     countries?: ApiCountry[];
 }
 
@@ -65,7 +59,6 @@ export function useOrigenes(
 
                 const json = await resp.json();
 
-                // ✅ TRANSFORMAR los datos aquí
                 const transformedData: OnoGraphResponse = {
                     países: json.countries ? json.countries.map((c: ApiCountry) => ({
                         jurisdicción: c.jurisdiction,
